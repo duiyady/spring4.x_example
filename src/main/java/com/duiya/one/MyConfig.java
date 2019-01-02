@@ -1,9 +1,6 @@
 package com.duiya.one;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.context.annotation.*;
 
 @Configuration
 @ComponentScan
@@ -28,4 +25,27 @@ public class MyConfig {
 //        baseService4.setBaseService3(getBaseServide3());
 //        return baseService4;
 //    }
+
+    //测试bean构造函数后和销毁前
+    @Bean(initMethod = "init", destroyMethod = "destroy")
+    BeanWayService getBeanWayService(){
+        return new BeanWayService();
+    }
+    @Bean
+    JSR250WayService getJSR250WayService(){
+        return new JSR250WayService();
+    }
+
+    //测试profile为不同环境使用不同配置
+    @Bean
+    @Profile("dev") //①
+    public DemoBean devDemoBean() {
+        return new DemoBean("from development profile");
+    }
+
+    @Bean
+    @Profile("prod") //②
+    public DemoBean prodDemoBean() {
+        return new DemoBean("from production profile");
+    }
 }

@@ -48,6 +48,14 @@
       <version>2.6</version>
     </dependency>
 
+    <!-- https://mvnrepository.com/artifact/javax.annotation/jsr250-api -->
+    <dependency>
+      <groupId>javax.annotation</groupId>
+      <artifactId>jsr250-api</artifactId>
+      <version>1.0</version>
+    </dependency>
+
+
 
     <dependency>
       <groupId>junit</groupId>
@@ -68,6 +76,8 @@
         <directory>src/main/java</directory>
         <includes>
           <include>**/*.xml</include>
+          <include>**/*.txt</include>
+          <include>**/*.properties</include>
         </includes>
       </resource>
     </resources>

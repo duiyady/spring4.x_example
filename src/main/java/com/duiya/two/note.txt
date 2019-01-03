@@ -1,0 +1,72 @@
+Spring的依赖注入的最大亮点就是你所有的Bean对Spring容器的存在是没有意识的。即你可以将你的容器替换成别的容器
+但是在实际的项目中，我们不可避免的要用到Spring容器本身的功能资源，这时候Bean必须要意识到Spring容器的存在，才能调用Spring所提
+供的资源，这就是所谓的Spring Aware。其实Spring Aware本来就是Spring设计用来框架内部使用的，若使用了Spring Aware，你的
+Bean将会和Spring框架耦合。
+Spring提供的Aware接口
+    BeanFactoryAware	            获得当前bean factory，这样可以调用容器的服务
+    ApplicationContextAware*	    获得当前application context，这样可以调用容器的服务
+    MessageSourceAware	            获得message source这样可以获得文本信息
+    ApplicationEventPublisherAware	应用事件发布器，可以发布事件
+    ResourceLoaderAware	            获得资源加载器，可以获得外部资源文件
+Spring Aware的目的是为了让Bean获得Spring容器的服务。因为ApplicationContext接口集成了MessageSource接口，
+ApplicationEventPublisherAware接口和ResourceLoaderAware接口，所以Bean继承ApplicationContextAware可以获得Spring容
+器的所有服务，但原则上我们还是用到什么接口就实现什么接口。
+
+
+Spring通过任务执行器(TaskExecutor)来实现多线程和并发编程。使用ThreadPoolTaskExecutor可实现一个基于线程池的TaskExecutor
+。而实际开发中任务一般是非阻碍的，即异步的，所以我们要在配置类中通过@EnableAsync开启对异步任务的支持，并通过在实际执行的Bean的
+方法中使用@Async注解来声明其是一个异步任务。
+
+
+从Spring3.1开始，计划任务在Spring中的实现变得异常的简单。首先通过在配置类注解@EnableScheduling来开启计划任务的支持，然后在
+要执行计划任务的方法上注解@Scheduled来声明这是一个计划任务。
+Spring通过@Scheduled支持多种类型的计划任务，包含cron,fixDelay,fixRate等。
+    con表示按时间执行的定时任务，由6或7个由空格分隔的时间字段组成 秒 分 时 日 月 星期 年(可选)
+    详细介绍可看：https://blog.csdn.net/u011789653/article/details/51153536
+    fixRate表示按一定频率执行的定时任务，例如5秒@Scheduled(fixedRate = 1000 * 5)
+    fixDelay也是按一定频率，但是fixRate间隔是两次开始之间的间隔，fixDelay是上一次结束到下一次开始的间隔
+    加载是按corn fixDelay fixRate的顺序加载，执行过程也是一个一个任务执行，执行完后将下一次执行时间加入
+    若执行过程中有一个卡死循环，那么剩下的不会执行了
+
+
+通过活动的profile可以获得不同的Bean。Spring4提供了一个更加通用的基于条件的Bean的创建，即使用@Conditional注解。
+@Conditional根据满足某一个特定条件创建一个特定的Bean。比如说，当某一个jar包在某一个类路径下的时候，自动配置一个或者多个Bean；
+或者只有某个Bean被创建才会创建另外一个Bean。总的来说，就是根据特定条件来控制Bean的创建行为，这样我们可以利用这个特性进行一些自
+动的配置。在Spring Boot中大量的应用到条件注解
+    当使用条件注解创建不同的bean但是有多个匹配时会报错，所以必须保证一种情况只能满足一个条件
+
+
+从Spring2开始，为了响应JDK1.5推出的注解功能，Spring开始大量加入注解来替代xml配置。Spring的注解主要用来配置和注入Bean，以及
+AOP相关配置(@Transaction)。随着注解的大量使用，尤其相同的多个注解用到各个类或方法中，会相当繁琐。这就是所谓的样板代码
+(boilerplate code)，是Spring设计原则中要消除的代码。
+所谓元注解其实就是可以注解到别的注解上面的注解，被注解的注解称之为组合注解(可能有点拗口，体会含义最重要)，组合注解具备注解其上的
+元注解的功能。Spring的很多注解都可以作为元注解，而且Spring本身已经有很多组合注解，如@Configuration就是一个组合@Component注
+解，表明这个类其实也是一个Bean。
+在之前介绍的相关文章里面，大量使用@Configuration和@ComponentScan注解到配置类上，其实这样相对有些繁琐，下面将这两个元注解组成
+一个组合注解，这样我们只需要写一个注解就可以表示两个注解。
+例如    @Target(ElementType.TYPE)
+       @Retention(RetentionPolicy.RUNTIME)
+       @Documented
+       @Configuration //①
+       @ComponentScan //②
+       public @interface Light4jConfiguration {
+        String[] value() default {}; //3
+       }
+    后面就可以直接使用@Light4jConfiguration
+
+
+@Enable*
+@EnableAspectJAutoProxy 开启对AspectJ自动代理的支持
+@EnableAsync 开启异步方法的支持
+@EnableScheduling 开启计划任务的支持
+@EnableWebMvc 开启Web MVC的配置支持。
+@EnableConfigurationProperties开启对@ConfigurationProperties注解配置Bean的支持。
+@EnableJpaRepositories 开启对Spring Data JPA Repository的支持。
+@EnableTransactionManagement 开启注解式事务的支持。
+@EnableCaching开启注解式的缓存支持。
+观察这些@Enable*注解的源码，发现所有的注解都有一个@Import注解，@Import是用来导入配置类的，这也就意味着这些自动开启的实现其实
+是导入了一些自动配置的Bean。这些导入的配置主要分为以下三种类型：
+直接导入配置类   依据条件选择配置类    动态注册Bean
+
+
+

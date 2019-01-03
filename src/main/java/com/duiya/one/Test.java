@@ -22,10 +22,9 @@ public class Test {
 //        BaseService4 baseService4 = context.getBean(BaseService4.class);
 //        baseService4.sayHello();
 
-        /*测试切面*/
+        /*测试切面aop*/
 //        AnnotationService annotationService = context.getBean(AnnotationService.class);
 //        MethodService methodService = context.getBean(MethodService.class);
-//
 //        annotationService.add();
 //        methodService.add();
 
@@ -46,8 +45,10 @@ public class Test {
 
 
         //测试Spring事件
-        DemoPublisher demoPublisher = context.getBean(DemoPublisher.class);
-        demoPublisher.publish("hello application event");
+//        DemoPublisher demoPublisher = context.getBean(DemoPublisher.class);
+//        demoPublisher.publish("hello application event");
+
+
 
 
         context.close();

@@ -50,7 +50,8 @@ Scope描述的是Spring容器如何新建Bean的实例的。Spring的Scope有以
     (5) GlobalSession：这个只在portal应用中有用，给每一个global http session新建一个bean实例。
 
 
-Spring开发中经常涉及调用各种资源的情况，包含普通文件，网址，配置文件，系统环境变量等，我们可以使用Spring的表达式语言实现资源的注入。
+Spring开发中经常涉及调用各种资源的情况，包含普通文件，网址，配置文件，系统环境变量等，我们可以使用Spring的表达式语言实现资源的
+注入。
 Spring主要在注解@Value的参数中使用表达式。需要commons-io
 
 
@@ -71,7 +72,6 @@ Spring的事件(Application Event)为Bean与Bean之间的消息通信提供了�
 Spring的事件需要遵循如下流程：
     1. 自定义事件，继承ApplicationEvent
     2. 定义事件监听器，实现ApplicationListener
-
 
 
 
